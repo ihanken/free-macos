@@ -3,4 +3,11 @@ language: cpp
 
 compiler: g++
 
-script: make && make clean
+script:
+    - make
+    - make run | grep "Total"
+    - make run | grep "Free"
+    - make run | grep "Active"
+    - make run | grep "Inactive"
+    - make run | grep "Wired"
+    - make clean
