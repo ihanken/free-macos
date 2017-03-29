@@ -62,6 +62,30 @@ double getMB(ll bytes) { return (double) bytes / pow(1024.0, 2); }
 double getGB(ll bytes) { return (double) bytes / pow(1024.0, 3); }
 double getTB(ll bytes) { return (double) bytes / pow(1024.0, 4); }
 
+/* This is the human conversion function. It's a bit more complicated. */
+pair<double, string> getHumanReadable(ll bytes) {
+    int exponent = 0; // 0 = bytes, 8 = KB, etc.
+    double dBytes = (double) bytes; // Cast to a double for floating point stuff.
+
+    while ((int) log10(dBytes) + 1 > 3) {
+        dBytes /= 1024.0;
+        exponent += 8;
+    }
+
+    string suffix = "";
+
+    switch (exponent) {
+    case 0:     suffix = "Bytes";       break;
+    case 8:     suffix = "KB   ";       break;
+    case 16:    suffix = "MB   ";       break;
+    case 24:    suffix = "GB   ";       break;
+    case 32:    suffix = "TB   ";       break;
+    case 40:    suffix = "PB   ";       break;
+    }
+
+    return make_pair(dBytes, suffix);
+}
+
 // Print the column headings.
 void printHeadings() {
     printf("%17s      ", "Total");      // Total Memory
@@ -75,7 +99,7 @@ void printHeadings() {
 // Print the memory in bytes.
 void printBytes(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
     printHeadings();                    // Print our headings.
-    printf("Mem:  %11lld Bytes", tMem); // Total Mempory
+    printf("Mem:  %11lld Bytes", tMem); // Total Memory
     printf("%11lld Bytes", fMem);       // Free Memory
     printf("%11lld Bytes", aMem);       // Active Memory
     printf("%11lld Bytes", iMem);       // Inactive Memory
@@ -85,77 +109,106 @@ void printBytes(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
 // Print the memory in kilobytes.
 void printKB(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
     printHeadings();                            // Print our headings.
-    printf("Mem:  %11.2f KB   ", getKB(tMem));  // Total Mempory
-    printf("%11.2f KB   ", getKB(fMem));        // Free Mempory
-    printf("%11.2f KB   ", getKB(aMem));        // Active Mempory
-    printf("%11.2f KB   ", getKB(iMem));        // Inactive Mempory
-    printf("%11.2f KB   \n", getKB(wMem));      // Wired Mempory
+    printf("Mem:  %11.2f KB   ", getKB(tMem));  // Total Memory
+    printf("%11.3f KB   ", getKB(fMem));        // Free Memory
+    printf("%11.3f KB   ", getKB(aMem));        // Active Memory
+    printf("%11.3f KB   ", getKB(iMem));        // Inactive Memory
+    printf("%11.3f KB   \n", getKB(wMem));      // Wired Memory
 }
 
 // Print the memory in megabytes.
 void printMB(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
     printHeadings();                            // Print our headings.
-    printf("Mem:  %11.3f MB   ", getMB(tMem));  // Total Mempory
-    printf("%11.3f MB   ", getMB(fMem));        // Free Mempory
-    printf("%11.3f MB   ", getMB(aMem));        // Active Mempory
-    printf("%11.3f MB   ", getMB(iMem));        // Inactive Mempory
-    printf("%11.3f MB   \n", getMB(wMem));      // Wired Mempory
+    printf("Mem:  %11.3f MB   ", getMB(tMem));  // Total Memory
+    printf("%11.3f MB   ", getMB(fMem));        // Free Memory
+    printf("%11.3f MB   ", getMB(aMem));        // Active Memory
+    printf("%11.3f MB   ", getMB(iMem));        // Inactive Memory
+    printf("%11.3f MB   \n", getMB(wMem));      // Wired Memory
 }
 
 // Print the memory in gigabytes.
 void printGB(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
     printHeadings();                            // Print our headings.
-    printf("Mem:  %11.4f GB   ", getGB(tMem));  // Total Mempory
-    printf("%11.4f GB   ", getGB(fMem));        // Free Mempory
-    printf("%11.4f GB   ", getGB(aMem));        // Active Mempory
-    printf("%11.4f GB   ", getGB(iMem));        // Inactive Mempory
-    printf("%11.4f GB   \n", getGB(wMem));      // Wired Mempory
+    printf("Mem:  %11.4f GB   ", getGB(tMem));  // Total Memory
+    printf("%11.3f GB   ", getGB(fMem));        // Free Memory
+    printf("%11.3f GB   ", getGB(aMem));        // Active Memory
+    printf("%11.3f GB   ", getGB(iMem));        // Inactive Memory
+    printf("%11.3f GB   \n", getGB(wMem));      // Wired Memory
 }
 
 // Print the memory in terabytes.
 void printTB(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
     printHeadings();                            // Print our headings.
-    printf("Mem:  %11.6f TB   ", getTB(tMem));  // Total Mempory
-    printf("%11.6f TB   ", getTB(fMem));        // Free Mempory
-    printf("%11.6f TB   ", getTB(aMem));        // Active Mempory
-    printf("%11.6f TB   ", getTB(iMem));        // Inactive Mempory
-    printf("%11.6f TB   \n", getTB(wMem));      // Wired Mempory
+    printf("Mem:  %11.6f TB   ", getTB(tMem));  // Total Memory
+    printf("%11.3f TB   ", getTB(fMem));        // Free Memory
+    printf("%11.3f TB   ", getTB(aMem));        // Active Memory
+    printf("%11.3f TB   ", getTB(iMem));        // Inactive Memory
+    printf("%11.3f TB   \n", getTB(wMem));      // Wired Memory
+}
+
+// Print human readable format.
+void printHuman(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
+    printHeadings(); // Print our headings.
+
+    // Get Human readable pairs.
+    pair<double, string> hTMem = getHumanReadable(tMem);    // Total Memory
+    pair<double, string> hFMem = getHumanReadable(fMem);    // Free Memory
+    pair<double, string> hAMem = getHumanReadable(aMem);    // Active Memory
+    pair<double, string> hIMem = getHumanReadable(iMem);    // Inactive Memory
+    pair<double, string> hWMem = getHumanReadable(wMem);    // Wired Memory
+
+    printf("Mem:  %11.3g %s", hTMem.first, hTMem.second.c_str());// Total Mem
+    printf("%11.3g %s", hFMem.first, hFMem.second.c_str());      // Free Mem
+    printf("%11.3g %s", hAMem.first, hAMem.second.c_str());      // Act. Mem
+    printf("%11.3g %s", hIMem.first, hIMem.second.c_str());      // Inac. Mem
+    printf("%11.3g %s\n", hWMem.first, hWMem.second.c_str());    // Wir. Mem
 }
 
 /* SWAP functions */
 // Print the memory in bytes.
 void printBytes(ll tMem, ll fMem, ll aMem) {
-    printf("Swap: %11lld Bytes", tMem);     // Total Mempory
+    printf("Swap: %11lld Bytes", tMem);     // Total Memory
     printf("%11lld Bytes", fMem);           // Free Memory
     printf("%11lld Bytes\n", aMem);         // Active Memory
 }
 
 // Print the memory in kilobytes.
 void printKB(ll tMem, ll fMem, ll aMem) {
-    printf("Swap: %11.2f KB   ", getKB(tMem));  // Total Mempory
-    printf("%11.2f KB   ", getKB(fMem));        // Free Mempory
-    printf("%11.2f KB   \n", getKB(aMem));      // Active Mempory
+    printf("Swap: %11.3f KB   ", getKB(tMem));  // Total Memory
+    printf("%11.3f KB   ", getKB(fMem));        // Free Memory
+    printf("%11.3f KB   \n", getKB(aMem));      // Active Memory
 }
 
 // Print the memory in megabytes.
 void printMB(ll tMem, ll fMem, ll aMem) {
-    printf("Swap: %11.3f MB   ", getMB(tMem));  // Total Mempory
-    printf("%11.3f MB   ", getMB(fMem));        // Free Mempory
-    printf("%11.3f MB   \n", getMB(aMem));      // Active Mempory
+    printf("Swap: %11.3f MB   ", getMB(tMem));  // Total Memory
+    printf("%11.3f MB   ", getMB(fMem));        // Free Memory
+    printf("%11.3f MB   \n", getMB(aMem));      // Active Memory
 }
 
 // Print the memory in gigabytes.
 void printGB(ll tMem, ll fMem, ll aMem) {
-    printf("Swap: %11.4f GB   ", getGB(tMem));  // Total Mempory
-    printf("%11.4f GB   ", getGB(fMem));        // Free Mempory
-    printf("%11.4f GB   \n", getGB(aMem));      // Active Mempory
+    printf("Swap: %11.3f GB   ", getGB(tMem));  // Total Memory
+    printf("%11.3f GB   ", getGB(fMem));        // Free Memory
+    printf("%11.3f GB   \n", getGB(aMem));      // Active Memory
 }
 
 // Print the memory in terabytes.
 void printTB(ll tMem, ll fMem, ll aMem) {
-    printf("Swap: %11.6f TB   ", getTB(tMem));  // Total Mempory
-    printf("%11.6f TB   ", getTB(fMem));        // Free Mempory
-    printf("%11.6f TB   \n", getTB(aMem));      // Active Mempory
+    printf("Swap: %11.3f TB   ", getTB(tMem));  // Total Memory
+    printf("%11.3f TB   ", getTB(fMem));        // Free Memory
+    printf("%11.3f TB   \n", getTB(aMem));      // Active Memory
+}
+
+// Print human readable format.
+void printHuman(ll tMem, ll fMem, ll aMem) {// Get Human readable pairs.
+    pair<double, string> hTMem = getHumanReadable(tMem);    // Total Memory
+    pair<double, string> hFMem = getHumanReadable(fMem);    // Free Memory
+    pair<double, string> hAMem = getHumanReadable(aMem);    // Active Memory
+
+    printf("Swap: %11.3g %s", hTMem.first, hTMem.second.c_str());   // Total Mem
+    printf("%11.3g %s", hFMem.first, hFMem.second.c_str());         // Free Mem
+    printf("%11.3g %s\n", hAMem.first, hAMem.second.c_str());       // Act. Mem
 }
 
 int main(int argc, const char *argv[]) {
@@ -168,9 +221,10 @@ int main(int argc, const char *argv[]) {
        fSwapMem,    // Free swap memory
        aSwapMem;    // Used swap memory
 
-    getMem(tMem, aMem, iMem, fMem, wMem);
-    getSwap(tSwapMem, fSwapMem, aSwapMem);
+    getMem(tMem, aMem, iMem, fMem, wMem);   // Fill the mem values.
+    getSwap(tSwapMem, fSwapMem, aSwapMem);  // Fill the swap mem values.
 
+    // Only one argument can be used, so just grab the last one.
     string lastArg = argv[argc - 1];
 
     if (argc == 1 || lastArg == "-b" || lastArg == "--bytes") { // Use bytes
@@ -194,7 +248,8 @@ int main(int argc, const char *argv[]) {
         printTB(tSwapMem, fSwapMem, aSwapMem); // Print swap mem.
     }
     else if (lastArg == "-h" || lastArg == "--human") { // Use human readable
-            printf("Human readable format.\n");         // formatting
+        printHuman(tMem, fMem, aMem, iMem, wMem); // Print mem.
+        printHuman(tSwapMem, fSwapMem, aSwapMem); // Print swap mem.
     }
     else { // Invalid argument.
         printf("Invalid final argument supplied.\n"); // Give an error.
