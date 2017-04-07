@@ -47,7 +47,6 @@ void getSwap(ll &tSwapMem, ll &fSwapMem, ll &aSwapMem) {
 
     if (sysctlbyname("vm.swapusage", &vmusage, &size, NULL, 0) !=0) {
         perror("unable to get swap usage"); // Handle an error.
-        printf("Fuck");
     }
     else { // Grab our values and put them in the values passed.
         tSwapMem = vmusage.xsu_total;                       // Total memory
@@ -67,9 +66,9 @@ pair<double, string> getHumanReadable(ll bytes) {
     int exponent = 0; // 0 = bytes, 8 = KB, etc.
     double dBytes = (double) bytes; // Cast to a double for floating point stuff.
 
-    while ((int) log10(dBytes) + 1 > 3) {
-        dBytes /= 1024.0;
-        exponent += 8;
+    while ((int) log10(dBytes) + 1 > 3) { // Repeatedly divide by 1024.
+        dBytes /= 1024.0;   // Divide.
+        exponent += 8;      // Update the exponent.
     }
 
     string suffix = "";
@@ -81,6 +80,7 @@ pair<double, string> getHumanReadable(ll bytes) {
     case 24:    suffix = "GB   ";       break;
     case 32:    suffix = "TB   ";       break;
     case 40:    suffix = "PB   ";       break;
+    default:                            break;
     }
 
     return make_pair(dBytes, suffix);
@@ -167,9 +167,9 @@ void printHuman(ll tMem, ll fMem, ll aMem, ll iMem, ll wMem) {
 /* SWAP functions */
 // Print the memory in bytes.
 void printBytes(ll tMem, ll fMem, ll aMem) {
-    printf("Swap: %11lld Bytes", tMem);     // Total Memory
-    printf("%11lld Bytes", fMem);           // Free Memory
-    printf("%11lld Bytes\n", aMem);         // Active Memory
+    printf("Swap: %11lld Bytes", tMem);         // Total Memory
+    printf("%11lld Bytes", fMem);               // Free Memory
+    printf("%11lld Bytes\n", aMem);             // Active Memory
 }
 
 // Print the memory in kilobytes.
@@ -201,7 +201,8 @@ void printTB(ll tMem, ll fMem, ll aMem) {
 }
 
 // Print human readable format.
-void printHuman(ll tMem, ll fMem, ll aMem) {// Get Human readable pairs.
+void printHuman(ll tMem, ll fMem, ll aMem) {
+    // Get Human readable pairs.
     pair<double, string> hTMem = getHumanReadable(tMem);    // Total Memory
     pair<double, string> hFMem = getHumanReadable(fMem);    // Free Memory
     pair<double, string> hAMem = getHumanReadable(aMem);    // Active Memory
